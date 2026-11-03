@@ -19,12 +19,12 @@ A command line tool that reads how a machine renews its Let's Encrypt certificat
 - A renewal setting is an error when it renews on every run or leaves one day or less, and a warning when it leaves fewer days than `policy.min_margin_days`. <!-- src: src/window.mjs:25-26 -->
 - A run gap is too long when the last third of the lifetime would hold fewer runs than `policy.min_runs_in_renew_window`. <!-- src: src/window.mjs:46-60 -->
 - Traefik's acme.json is flagged when any group or other permission bit is set. <!-- src: src/checks/traefik.mjs:108 -->
-- A hook is flagged when its absolute path is missing or not executable, or when a bare command name is on none of six standard PATH directories under the root. <!-- src: src/hooks.mjs:5, src/hooks.mjs:20-36 -->
+- A hook is flagged when its absolute path is missing or not executable, or when a bare command name is on none of six standard PATH directories under the root. Shell keywords, subshells and unreadable paths are skipped. <!-- src: src/hooks.mjs:5, src/hooks.mjs:24-44 -->
 - acme.sh hook values are decoded from their base64 wrapping before they are checked. <!-- src: src/checks/acmesh.mjs:7-19 -->
 
 ## Architecture
 
-- Every file read goes through a `Tree` that resolves symlinks, including ones in the middle of a path, against the audited root and gives up after 20 hops. <!-- src: src/fsx.mjs:21-45 -->
+- Every file read goes through a `Tree` that resolves symlinks, including ones in the middle of a path, against the audited root and gives up after 20 hops. A path it may not read is reported as denied, not as missing. <!-- src: src/fsx.mjs:32-60 -->
 - Schedules are expanded to the days they fire on across 800 days from 2027-01-01, and the longest gap is what counts. <!-- src: src/cron.mjs:4-5 -->
 - Only the demo tree builder writes files, and it refuses to remove a directory that is not its own temp dir. <!-- src: src/demo-tree.mjs:33, src/demo-tree.mjs:97-100 -->
 
