@@ -1,7 +1,5 @@
 # What acme-audit does not check
 
-Read this before you trust a clean run.
-
 ## Where the demand comes from
 
 The reason to run this now is the change to 64-day certificates on 2027-02-10, and the 45-day default planned for 2028. The evidence is one announcement from Let's Encrypt that tells people to grep by hand, and one blog post that tells readers to tweak their automations. I have not measured how many people want a tool for it, and I have no usage numbers. After the change is done the same checks still answer "will my renewals fire", but whether anyone keeps running it is a guess.
@@ -37,6 +35,6 @@ The reason to run this now is the change to 64-day certificates on 2027-02-10, a
 - The renewal window used for the timer check is the last third of the lifetime, taken from the "about two thirds" in Let's Encrypt's post. A client with ARI may be told a different time.
 - The 6-day short-lived profile is not tested by default. Use `--lifetime 6`.
 
-## Not a fix
+## Read only
 
-It reports. It never edits a file, restarts a service or runs a client, and there is no mode that does.
+It never edits a file, restarts a service or runs a client, and there is no option that does.

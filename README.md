@@ -77,7 +77,7 @@ It reads configuration. It cannot tell you that a certificate on disk is about t
 
 ## Compared with other tools
 
-`certbot renew --dry-run` tests a renewal against staging, and it skips deploy hooks unless you add `--run-deploy-hooks`. That makes it the right test for whether issuance works and a poor one for whether the reload after issuance works. A monitor such as Uptime Kuma, which the [virtualizationhowto post of 2026-10-15](https://www.virtualizationhowto.com/2026/10/lets-encrypt-is-shortening-certificate-lifetimes-is-your-home-lab-ready/) recommends, watches the certificate and warns when it is close to expiry. acme-audit looks earlier, at the configuration, and does it across the clients on one machine. Use them together.
+`certbot renew --dry-run` tests a renewal against staging, and it skips deploy hooks unless you add `--run-deploy-hooks`. So it tests whether issuance works, and says little about whether the reload after issuance works. A monitor such as Uptime Kuma, which the [virtualizationhowto post of 2026-10-15](https://www.virtualizationhowto.com/2026/10/lets-encrypt-is-shortening-certificate-lifetimes-is-your-home-lab-ready/) recommends, watches the certificate and warns when it is close to expiry. acme-audit looks earlier, at the configuration, across the clients on one machine.
 
 ## Contributing
 
