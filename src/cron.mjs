@@ -22,6 +22,18 @@ export function maxGap(sched) {
   return gap;
 }
 
+// Several schedules that all fire the same job, such as repeated OnCalendar lines: measure them together.
+export function maxGapAll(scheds) {
+  if (scheds.length === 1) return maxGap(scheds[0]);
+  const at = [];
+  for (const { days, times } of scheds) for (const d of days) for (const t of times) at.push(d * 1440 + t);
+  if (at.length < 2) return DAYS;
+  const sorted = Int32Array.from(at).sort();
+  let gap = 0;
+  for (let i = 1; i < sorted.length; i++) gap = Math.max(gap, sorted[i] - sorted[i - 1]);
+  return gap / 1440;
+}
+
 const timesOf = (hours, minutes) => {
   const out = new Set();
   for (const h of hours) for (const m of minutes) out.add(h * 60 + m);

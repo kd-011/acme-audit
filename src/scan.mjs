@@ -1,6 +1,6 @@
 // Finds what runs renewals on a machine: cron files, systemd timers and the scripts they call.
 import path from 'node:path';
-import { calendarDays, cronDays, maxGap, timespanDays } from './cron.mjs';
+import { calendarDays, cronDays, maxGap, maxGapAll, timespanDays } from './cron.mjs';
 import { checkHook, shellWords } from './hooks.mjs';
 import { judge, describeJudgement, judgeGap, gapWhy, fmtDays } from './window.mjs';
 
@@ -136,16 +136,19 @@ export function scanSystemd(ctx) {
     const spans = keys.filter((k) => k.section === 'Timer' && /^OnUnit(Active|Inactive)Sec$/.test(k.key));
     const cals = keys.filter((k) => k.section === 'Timer' && k.key === 'OnCalendar');
     const gaps = [];
+    const parsed = [];
     for (const c of cals) {
       const d = calendarDays(c.value);
       if (!d) ctx.note(p, `line ${c.line}: could not read OnCalendar=${c.value}`);
-      else gaps.push(maxGap(d));
+      else parsed.push(d);
     }
+    if (parsed.length) gaps.push(maxGapAll(parsed));
     for (const s of spans) { const g = timespanDays(s.value); if (g) gaps.push(g); else ctx.note(p, `line ${s.line}: could not read ${s.key}=${s.value}`); }
     const gap = gaps.length ? Math.min(...gaps) : null;
     if (!gaps.length && !keys.some((k) => /^OnCalendar$|^OnUnit/.test(k.key)) && keys.some((k) => /^On(Boot|Startup|Active)Sec$/.test(k.key))) ctx.note(p, 'runs only at boot or start, so the time between runs depends on uptime');
+    const isMasked = masked.has(name) || masked.has(serviceName);
     const first = spans[0] ?? cals[0] ?? keys[0];
-    addScheduler(ctx, { client, kind: 'timer', file: p, line: first?.line ?? null, gap, enabled: enabled.has(name) && !masked.has(name), masked: masked.has(name), name, text });
+    addScheduler(ctx, { client, kind: 'timer', file: p, line: first?.line ?? null, gap, enabled: enabled.has(name) && !isMasked, masked: isMasked, name, text });
   }
   // Services that run a renewal are searched for hooks and numbers even when no timer starts them.
   for (const [name, p] of units) {
@@ -244,7 +247,7 @@ export function judgeSchedulers(ctx) {
     for (const s of off) {
       ctx.add({
         kind: 'TIMER-INFREQUENT', severity: 'error', client, file: s.file, line: s.line,
-        summary: `${s.name} runs ${CMD[client]} but is ${s.masked ? 'masked' : 'not enabled'}`,
+        summary: `${s.name} runs ${CMD[client]} but ${s.masked ? 'the timer or its service is masked' : 'is not enabled'}`,
         why: `Nothing starts the timer, so certificates are never renewed. They then expire on their lifetime, and shorter lifetimes make that come faster.`,
         detail: { schedule: s.masked ? 'timer-masked' : 'timer-not-enabled' },
       });

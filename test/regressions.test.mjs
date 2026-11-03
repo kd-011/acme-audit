@@ -114,3 +114,31 @@ test('the gap of a twice-daily timer is half a day, and a once-daily one is a da
   assert.equal(gap('OnCalendar=*-*-* 03:00'), 1);
   assert.equal(gap('OnCalendar=*-*-* 00,06,12,18:00'), 0.25);
 });
+
+test('several OnCalendar lines are one schedule: Mon plus Thu is a 4 day gap, two daily times is half a day', () => {
+  const gap = (...cals) => {
+    const root = makeRoot();
+    put(root, 'etc/letsencrypt/renewal/example.com.conf', certbotConf());
+    fs.mkdirSync(`${root}/var/www/html`, { recursive: true });
+    enableCertbotTimer(root, `[Timer]\n${cals.map((c) => `OnCalendar=${c}`).join('\n')}\n\n[Install]\nWantedBy=timers.target\n`);
+    return find(audit(root, ['--lifetime', '1']), 'TIMER-INFREQUENT')[0]?.detail.gap_days;
+  };
+  assert.equal(gap('Mon *-*-* 03:00', 'Thu *-*-* 03:00'), 4);
+  assert.equal(gap('*-*-* 00:00', '*-*-* 12:00'), 0.5);
+  const root = makeRoot();
+  put(root, 'etc/letsencrypt/renewal/example.com.conf', certbotConf());
+  fs.mkdirSync(`${root}/var/www/html`, { recursive: true });
+  enableCertbotTimer(root, '[Timer]\nOnCalendar=Mon 03:00\nOnCalendar=Thu 03:00\n\n[Install]\nWantedBy=timers.target\n');
+  assert.deepEqual(find(audit(root), 'TIMER-INFREQUENT'), [], 'a 4 day gap is fine for 45 day certificates');
+});
+
+test('a masked service behind an enabled timer is reported as masked', () => {
+  const root = makeRoot();
+  put(root, 'etc/letsencrypt/renewal/example.com.conf', certbotConf());
+  fs.mkdirSync(`${root}/var/www/html`, { recursive: true });
+  enableCertbotTimer(root);
+  link(root, 'etc/systemd/system/certbot.service', '/dev/null');
+  const [f] = find(audit(root), 'TIMER-INFREQUENT');
+  assert.match(f.summary, /masked/);
+  assert.equal(f.file, '/lib/systemd/system/certbot.timer');
+});
