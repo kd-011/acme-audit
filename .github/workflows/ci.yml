@@ -29,6 +29,4 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
-      - name: Install optional tools so every drill type is exercised
-        run: sudo apt-get update && sudo apt-get install -y age restic zstd xz-utils zip unzip gnupg postgresql-client
       - run: node --test

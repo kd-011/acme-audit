@@ -15,22 +15,36 @@ export class Tree {
     return path.join(this.root, p);
   }
 
-  // lstat that follows symlinks inside the root. Returns { path, st } or { path, st: null, dangling: true }.
+  // Walks a path one component at a time and follows every symlink, including the ones in the middle,
+  // against the audited root. A link to /etc inside the tree means the tree's /etc, never the host's.
+  // Returns { path, st } with the final lstat, or { path, st: null, dangling } when something is missing.
   resolve(p) {
-    let cur = p;
-    for (let i = 0; i < 20; i++) {
+    let hops = 0;
+    let parts = p.split('/').filter(Boolean);
+    let cur = '/';
+    for (let i = 0; i < parts.length; i++) {
+      const next = path.posix.join(cur, parts[i]);
       let st;
-      try { st = fs.lstatSync(this.real(cur)); } catch { return { path: cur, st: null, dangling: i > 0 }; }
-      if (!st.isSymbolicLink()) return { path: cur, st, dangling: false };
+      try { st = fs.lstatSync(this.real(next)); } catch { return { path: path.posix.join(cur, ...parts.slice(i)), st: null, dangling: hops > 0 }; }
+      if (!st.isSymbolicLink()) { cur = next; continue; }
+      if (++hops > 20) return { path: next, st: null, dangling: true };
       let target;
-      try { target = fs.readlinkSync(this.real(cur)); } catch { return { path: cur, st: null, dangling: true }; }
-      cur = path.isAbsolute(target) ? path.posix.normalize(target) : path.posix.join(path.posix.dirname(cur), target);
+      try { target = fs.readlinkSync(this.real(next)); } catch { return { path: next, st: null, dangling: true }; }
+      const base = path.isAbsolute(target) ? '/' : cur;
+      parts = [...path.posix.join(base, target).split('/').filter(Boolean), ...parts.slice(i + 1)];
+      cur = '/';
+      i = -1;
     }
-    return { path: cur, st: null, dangling: true };
+    let st = null;
+    try { st = fs.lstatSync(this.real(cur)); } catch { /* the root itself is checked by the caller */ }
+    return { path: cur, st, dangling: false };
   }
 
+  // lstat of the path itself, following links only in the directories above it.
   lstat(p) {
-    try { return fs.lstatSync(this.real(p)); } catch { return null; }
+    const dir = this.resolve(path.posix.dirname(p));
+    if (!dir.st) return null;
+    try { return fs.lstatSync(this.real(path.posix.join(dir.path, path.posix.basename(p)))); } catch { return null; }
   }
 
   stat(p) {

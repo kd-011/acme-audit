@@ -1,0 +1,30 @@
+name: Bug report
+description: A finding is wrong, a real problem was missed, or something does not match the docs
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The command you ran and its full output. Take out hostnames and anything that looks like a secret.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: files
+    attributes:
+      label: The files involved
+      description: The renewal file, Caddyfile, crontab line or script that the finding is about, with secrets taken out.
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The output of `acme-audit --version` and `node --version`.
+    validations:
+      required: true
