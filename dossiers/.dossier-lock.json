@@ -1,0 +1,351 @@
+{
+  "version": 1,
+  "docs": {
+    "acme-audit": {
+      "claims": {
+        "82444e64c041": {
+          "text": "Runs on Node 22 or newer and installs one command, `acme-audit`.",
+          "line": 14,
+          "specs": [
+            "package.json:12",
+            "package.json:14"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "package.json": {
+              "path": "package.json",
+              "blob": "7d9b84b4b05124905b43e47687e0464861346320",
+              "commit": "d2f44b51c947b0837d6de2cc663953b1e5193cfb",
+              "range": {
+                "start": 12,
+                "end": 12,
+                "hash": "5d48ecd1c4fed738bdf54fa6ec7818dba85ca13b"
+              }
+            },
+            "package.json:14-14": {
+              "path": "package.json",
+              "blob": "7d9b84b4b05124905b43e47687e0464861346320",
+              "commit": "d2f44b51c947b0837d6de2cc663953b1e5193cfb",
+              "range": {
+                "start": 14,
+                "end": 14,
+                "hash": "67a4ba2e9f1db54928caa00e148ef448613104e4"
+              }
+            }
+          }
+        },
+        "888b73a77d98": {
+          "text": "Has no runtime or development dependencies, only Node built-ins.",
+          "line": 15,
+          "specs": [
+            "package.json"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "package.json": {
+              "path": "package.json",
+              "blob": "7d9b84b4b05124905b43e47687e0464861346320",
+              "commit": "d2f44b51c947b0837d6de2cc663953b1e5193cfb"
+            }
+          }
+        },
+        "3edf4067925e": {
+          "text": "Exits 0 when nothing at or above `--fail-on` was found, 1 when something was, and 2 when it could not run.",
+          "line": 16,
+          "specs": [
+            "src/cli.mjs:82-83"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "src/cli.mjs": {
+              "path": "src/cli.mjs",
+              "blob": "0ba6ba32f5a36663eaa8d7032345a2d397f4055d",
+              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb",
+              "range": {
+                "start": 82,
+                "end": 83,
+                "hash": "d1eda2ceb1d5aba70f82daf56698f9fa4ea56d82"
+              }
+            }
+          }
+        },
+        "661f135af145": {
+          "text": "The audit root comes from `--root`, then `ACME_AUDIT_ROOT`, then `/`.",
+          "line": 17,
+          "specs": [
+            "src/cli.mjs:30"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "src/cli.mjs": {
+              "path": "src/cli.mjs",
+              "blob": "0ba6ba32f5a36663eaa8d7032345a2d397f4055d",
+              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb",
+              "range": {
+                "start": 30,
+                "end": 30,
+                "hash": "2ba13f34f5be4e8d3f5f6f521321464d7223c6fc"
+              }
+            }
+          }
+        },
+        "4d8bc5737c47": {
+          "text": "Lifetimes, dates, the numbers to grep for and the client facts come from `data/schedule.json` and are validated on load.",
+          "line": 18,
+          "specs": [
+            "src/schedule.mjs:6-20"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "src/schedule.mjs": {
+              "path": "src/schedule.mjs",
+              "blob": "c3642ad5dca458c127a5c41a3216b1b9061b377b",
+              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb",
+              "range": {
+                "start": 6,
+                "end": 20,
+                "hash": "373eac0675548f5c8f7c270b99855f5111c06403"
+              }
+            }
+          }
+        },
+        "21842b824429": {
+          "text": "A renewal setting is an error when it renews on every run or leaves one day or less, and a warning when it leaves fewer days than `policy.min_margin_days`.",
+          "line": 19,
+          "specs": [
+            "src/window.mjs:25-26"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "src/window.mjs": {
+              "path": "src/window.mjs",
+              "blob": "2dcfd3cbaba7db142f1f3d30ce8524cea94ca8f7",
+              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb",
+              "range": {
+                "start": 25,
+                "end": 26,
+                "hash": "8e82d10af9c2bb3893b40cf9ade559eea28ad959"
+              }
+            }
+          }
+        },
+        "7ec05959e512": {
+          "text": "A run gap is too long when the last third of the lifetime would hold fewer runs than `policy.min_runs_in_renew_window`.",
+          "line": 20,
+          "specs": [
+            "src/window.mjs:46-60"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "src/window.mjs": {
+              "path": "src/window.mjs",
+              "blob": "2dcfd3cbaba7db142f1f3d30ce8524cea94ca8f7",
+              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb",
+              "range": {
+                "start": 46,
+                "end": 60,
+                "hash": "5536a2851dab46404f95869cfdfe318a0775cf5c"
+              }
+            }
+          }
+        },
+        "c1a402a92a14": {
+          "text": "Traefik's acme.json is flagged when any group or other permission bit is set.",
+          "line": 21,
+          "specs": [
+            "src/checks/traefik.mjs:108"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "src/checks/traefik.mjs": {
+              "path": "src/checks/traefik.mjs",
+              "blob": "c80a325d50fea122715930c57269699e37f4652d",
+              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb",
+              "range": {
+                "start": 108,
+                "end": 108,
+                "hash": "c032de30c12ed7496ef01b14dc895e77c8a83235"
+              }
+            }
+          }
+        },
+        "a06df732b14d": {
+          "text": "A hook is flagged when its absolute path is missing or not executable, or when a bare command name is on none of six standard PATH directories under the root...",
+          "line": 22,
+          "specs": [
+            "src/hooks.mjs:5",
+            "src/hooks.mjs:24-44"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "src/hooks.mjs": {
+              "path": "src/hooks.mjs",
+              "blob": "0ad89ddaff76782aa24cfb33746e57b56450dc83",
+              "commit": "a3af51718fa1d44a30c6727435fc8a2a194005e9",
+              "range": {
+                "start": 5,
+                "end": 5,
+                "hash": "fcbc694a788219876e8c9c65e60632a83ff1919b"
+              }
+            },
+            "src/hooks.mjs:24-44": {
+              "path": "src/hooks.mjs",
+              "blob": "0ad89ddaff76782aa24cfb33746e57b56450dc83",
+              "commit": "a3af51718fa1d44a30c6727435fc8a2a194005e9",
+              "range": {
+                "start": 24,
+                "end": 44,
+                "hash": "b5aabf0f8d77f07fe66cb0740f30faae33b5ccb5"
+              }
+            }
+          }
+        },
+        "819ae4476400": {
+          "text": "acme.sh hook values are decoded from their base64 wrapping before they are checked.",
+          "line": 23,
+          "specs": [
+            "src/checks/acmesh.mjs:7-19"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "src/checks/acmesh.mjs": {
+              "path": "src/checks/acmesh.mjs",
+              "blob": "e11e39b58605b7558a93db2637307091bb071ccb",
+              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb",
+              "range": {
+                "start": 7,
+                "end": 19,
+                "hash": "8bcef03f9a22a9544df77e423e31a6ad387d607b"
+              }
+            }
+          }
+        },
+        "e47ae68a89b1": {
+          "text": "Every file read goes through a `Tree` that resolves symlinks, including ones in the middle of a path, against the audited root and gives up after 20 hops. A ...",
+          "line": 27,
+          "specs": [
+            "src/fsx.mjs:32-60"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "src/fsx.mjs": {
+              "path": "src/fsx.mjs",
+              "blob": "5a46b413521104f7a2b57c0e312b2b297c337220",
+              "commit": "a3af51718fa1d44a30c6727435fc8a2a194005e9",
+              "range": {
+                "start": 32,
+                "end": 60,
+                "hash": "5c4d11f67dff182e6db13e113fdace584b536b88"
+              }
+            }
+          }
+        },
+        "100f2abb9648": {
+          "text": "Schedules are expanded to the days they fire on across 800 days from 2027-01-01, and the longest gap is what counts.",
+          "line": 28,
+          "specs": [
+            "src/cron.mjs:4-5"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "src/cron.mjs": {
+              "path": "src/cron.mjs",
+              "blob": "7faef819498e0c81ab1860fb37764a976d7b9146",
+              "commit": "a3af51718fa1d44a30c6727435fc8a2a194005e9",
+              "range": {
+                "start": 4,
+                "end": 5,
+                "hash": "7f37f4abb2b16ba03ccc990e8bef3ddf37e0de0d"
+              }
+            }
+          }
+        },
+        "1afe7e24249f": {
+          "text": "Only the demo tree builder writes files, and it refuses to remove a directory that is not its own temp dir.",
+          "line": 29,
+          "specs": [
+            "src/demo-tree.mjs:33",
+            "src/demo-tree.mjs:97-100"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            "src/demo-tree.mjs": {
+              "path": "src/demo-tree.mjs",
+              "blob": "2fcb75429242692057638e3e0f259ba05ca9ad1d",
+              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb",
+              "range": {
+                "start": 33,
+                "end": 33,
+                "hash": "006127a2a80cdb26c429f67dbada2adaaa33da3c"
+              }
+            },
+            "src/demo-tree.mjs:97-100": {
+              "path": "src/demo-tree.mjs",
+              "blob": "2fcb75429242692057638e3e0f259ba05ca9ad1d",
+              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb",
+              "range": {
+                "start": 97,
+                "end": 100,
+                "hash": "be7a4f491f9c25d3ed9e2cad1db497532cbfbb86"
+              }
+            }
+          }
+        },
+        "764bd69033c6": {
+          "text": "CI runs `node --test` on Node 22 and 24 for every pull request and once a week.",
+          "line": 33,
+          "specs": [
+            ".github/workflows/ci.yml:9-10",
+            ".github/workflows/ci.yml:24"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            ".github/workflows/ci.yml": {
+              "path": ".github/workflows/ci.yml",
+              "blob": "7c3a27a5fb744b6cd60b652c2754b8a8f0cc4923",
+              "commit": "eb9887fd8be9d8de887c1f9134a2504c128d9eb2",
+              "range": {
+                "start": 9,
+                "end": 10,
+                "hash": "efa44788df60d80e0cdfdc8cd387ade5e298f757"
+              }
+            },
+            ".github/workflows/ci.yml:24-24": {
+              "path": ".github/workflows/ci.yml",
+              "blob": "7c3a27a5fb744b6cd60b652c2754b8a8f0cc4923",
+              "commit": "eb9887fd8be9d8de887c1f9134a2504c128d9eb2",
+              "range": {
+                "start": 24,
+                "end": 24,
+                "hash": "15dd520b8b26147365ab494c73091525b65b99af"
+              }
+            }
+          }
+        },
+        "25d772a7b622": {
+          "text": "Dependabot opens grouped weekly updates for GitHub Actions and qualifying ones merge automatically once CI is green.",
+          "line": 34,
+          "specs": [
+            ".github/dependabot.yml",
+            ".github/scripts/automerge-eligible.mjs"
+          ],
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
+          "files": {
+            ".github/dependabot.yml": {
+              "path": ".github/dependabot.yml",
+              "blob": "5e3a090199e4384ea98a662632c33699793ce495",
+              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb"
+            },
+            ".github/scripts/automerge-eligible.mjs": {
+              "path": ".github/scripts/automerge-eligible.mjs",
+              "blob": "4d76b76561799212bec89214b6695491b6ea0f60",
+              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb"
+            }
+          }
+        }
+      },
+      "pinnedAt": "2026-11-03T13:33:11.302Z",
+      "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e"
+    }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "checked": "2026-11-03",
+  "note": "Every entry under facts, lifetimes and clients was read on the page named in its source on the date in checked. Entries under policy are this tool's own choices, not claims about anyone else. Edit this file by pull request when a source changes.",
+
+  "targets": [
+    { "days": 64, "label": "64-day default from 2027-02-10", "source": "le-64-day" },
+    { "days": 45, "label": "45-day default planned for 2028", "source": "le-64-day" }
+  ],
+
+  "facts": {
+    "default_to_64_days": "2027-02-10",
+    "staging_64_days": "2026-10-14",
+    "last_90_day_expiry": "2027-05-11",
+    "default_to_45_days_year": 2028,
+    "renew_at_fraction_of_lifetime": 0.6667,
+    "hardcoded_numbers": [83, 80, 60]
+  },
+
+  "lifetimes": [
+    { "profile": "classic", "hours": 2160, "source": "le-profiles" },
+    { "profile": "tlsserver", "hours": 1080, "source": "le-profiles" },
+    { "profile": "shortlived", "hours": 160, "source": "le-profiles" }
+  ],
+
+  "clients": {
+    "certbot": {
+      "default_before_days_until": "4.0.0",
+      "default_before_days": 30,
+      "lifetime_fraction_since": "4.0.0",
+      "ari_since": "4.1.0",
+      "sources": ["certbot-changelog"]
+    },
+    "acmesh": {
+      "default_renewal_days": 30,
+      "ari_since": "3.1.3",
+      "sources": ["acmesh-source"]
+    },
+    "lego": {
+      "default_days": 30,
+      "ari_since": "4.12.0",
+      "ari_default_since": "4.20.2",
+      "sources": ["lego-changelog", "lego-source"]
+    },
+    "caddy": {
+      "default_renewal_window_ratio": 0.3333,
+      "default_renew_interval_minutes": 10,
+      "ari_since": "2.8.0",
+      "sources": ["caddy-options", "caddy-release"]
+    },
+    "traefik": {
+      "default_certificates_duration_hours": 2160,
+      "renew_periods": [
+        { "min_duration_hours": 8760, "renew_before_hours": 2880, "interval_hours": 168 },
+        { "min_duration_hours": 2160, "renew_before_hours": 720, "interval_hours": 24 },
+        { "min_duration_hours": 720, "renew_before_hours": 240, "interval_hours": 12 },
+        { "min_duration_hours": 144, "renew_before_hours": 48, "interval_hours": 2 },
+        { "min_duration_hours": 24, "renew_before_hours": 6, "interval_hours": 0.1667 },
+        { "min_duration_hours": 0, "renew_before_hours": 0.3333, "interval_hours": 0.0167 }
+      ],
+      "acme_json_max_mode": "0600",
+      "sources": ["traefik-acme-docs", "traefik-source"]
+    }
+  },
+
+  "policy": {
+    "min_margin_days": 7,
+    "min_runs_in_renew_window": 3
+  },
+
+  "sources": {
+    "le-64-day": {
+      "url": "https://letsencrypt.org/2026/10/07/64-day-certs",
+      "checked": "2026-11-03",
+      "says": "From 2027-02-10 default lifetime is 64 days. Staging issues 64-day certificates from 2026-10-14. Last 90-day certificate expected to expire 2027-05-11. Default lifetime of 45 days in 2028. Clients with ARI need nothing. Hardcoded renewals should move to about two thirds of lifetime. Grep cron jobs, wrapper scripts and runbooks for 83, 80 or 60."
+    },
+    "le-profiles": {
+      "url": "https://letsencrypt.org/docs/profiles/",
+      "checked": "2026-11-03",
+      "says": "classic is 90 days and the default, tlsserver is 45 days, shortlived is about 6 days (160 hours)."
+    },
+    "certbot-changelog": {
+      "url": "https://raw.githubusercontent.com/certbot/certbot/main/certbot/CHANGELOG.md",
+      "checked": "2026-11-03",
+      "says": "4.0.0 (2025-04-07): renew with 1/3 of lifetime left, 1/2 for lifetimes under 10 days, instead of a fixed 30 days; renew_before_expiry still overrides. 4.1.0 (2025-06-10): ARI support, an early ARI answer overrides a later renew_before_expiry. 4.1.1: no ARI check for lineages with autorenew false."
+    },
+    "certbot-source": {
+      "url": "https://raw.githubusercontent.com/certbot/certbot/main/certbot/src/certbot/_internal/renewal.py",
+      "checked": "2026-11-03",
+      "says": "A renewal file that is broken, lacks renewalparams or lacks an authenticator is logged as an error, skipped and counted as a parse failure, and the renew run exits non-zero. Directory hooks run only for files that are executable (hooks.py list_hooks)."
+    },
+    "acmesh-source": {
+      "url": "https://github.com/acmesh-official/acme.sh/blob/3.1.6/acme.sh",
+      "checked": "2026-11-03",
+      "says": "DEFAULT_RENEW is 30. Le_RenewalDays is written to the domain conf only when --days was passed. Next renewal is creation time plus days minus one day, capped at one day before expiry. ARI code is present in tag 3.1.3 and absent in 3.1.2. The 3.1.5 release notes say an explicit --days outranks the ARI window."
+    },
+    "lego-changelog": {
+      "url": "https://github.com/go-acme/lego/blob/master/CHANGELOG.md",
+      "checked": "2026-11-03",
+      "says": "v4.12.0 (2023-05-28) initial ARI implementation. v4.20.2 (2024-11-11) the CLI checks ARI unless explicitly disabled."
+    },
+    "lego-source": {
+      "url": "https://github.com/go-acme/lego/blob/master/cmd/cmd_renew.go",
+      "checked": "2026-11-03",
+      "says": "renew --days is the number of days left on a certificate to renew it, default 30. --dynamic renews with 1/3 of the lifetime left (1/2 for short-lived) and supersedes --days. --ari-disable turns the renewalInfo check off. --renew-hook runs only when a certificate was renewed."
+    },
+    "caddy-options": {
+      "url": "https://caddyserver.com/docs/caddyfile/options",
+      "checked": "2026-11-03",
+      "says": "renewal_window_ratio defaults to 0.3333 for the global option. renew_interval defaults to 10m. acme_ca defaults to ZeroSSL and Let's Encrypt production."
+    },
+    "caddy-release": {
+      "url": "https://github.com/caddyserver/caddy/releases/tag/v2.8.0",
+      "checked": "2026-11-03",
+      "says": "Caddy 2.8.0 (2024-05-29) supports ACME Renewal Information."
+    },
+    "traefik-acme-docs": {
+      "url": "https://doc.traefik.io/traefik/reference/install-configuration/tls/certificate-resolvers/acme/",
+      "checked": "2026-11-03",
+      "says": "certificatesDuration is in hours, default 2160, used only to determine renewal dates. By default Traefik starts renewing 30 days before expiry. The page does not mention ARI."
+    },
+    "traefik-source": {
+      "url": "https://github.com/traefik/traefik/blob/master/pkg/provider/acme/provider.go",
+      "checked": "2026-11-03",
+      "says": "getCertificateRenewDurations maps certificatesDuration to a renew-before period and a check interval. local_store_unix.go CheckFile returns an error when the acme.json mode has any group or other bit set: 'permissions ... are too open, please use 600'."
+    }
+  }
+}
