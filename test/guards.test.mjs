@@ -30,7 +30,7 @@ test('data/schedule.json: every source has a URL and a check date, and every cit
     assert.ok(src.says.length > 20, id);
   }
   const cited = new Set();
-  const collect = (o) => { if (o && typeof o === 'object') for (const [k, v] of Object.entries(o)) { if (k === 'source' && typeof v === 'string') cited.add(v); if (k === 'sources') v.forEach((x) => cited.add(x)); collect(v); } };
+  const collect = (o) => { if (o && typeof o === 'object') for (const [k, v] of Object.entries(o)) { if (k === 'source' && typeof v === 'string') cited.add(v); if (k === 'sources' && Array.isArray(v)) v.forEach((x) => cited.add(x)); collect(v); } };
   collect({ ...s, sources: undefined });
   for (const id of cited) assert.ok(s.sources[id], `cited source ${id} is not listed`);
   assert.ok(s.targets.length >= 2);

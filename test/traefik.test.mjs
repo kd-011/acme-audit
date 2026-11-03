@@ -57,7 +57,7 @@ test('DEAD-AUTH: a resolver with no challenge cannot renew', () => {
       email: admin@example.com
       storage: /etc/traefik/acme.json`));
   const [f] = find(audit(root), 'DEAD-AUTH');
-  assert.equal(f.line, 7);
+  assert.equal(f.line, 9);
   assert.match(f.summary, /nochallenge/);
 });
 

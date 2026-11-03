@@ -30,7 +30,7 @@ test('HARDCODED-DAYS: a cron job runs a wrapper that renews certificates older t
   assert.equal(hits.length, 1, 'the comment line is not flagged, the find line is');
   assert.equal(hits[0].file, '/usr/local/bin/renew-certs.sh');
   assert.equal(hits[0].line, 6);
-  assert.equal(hits[0].severity, 'warn');
+  assert.equal(hits[0].severity, 'error');
   assert.match(hits[0].summary, /60/);
   assert.match(hits[0].why, /64|45/);
 });
