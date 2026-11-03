@@ -10,7 +10,7 @@
             "package.json:12",
             "package.json:14"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "package.json": {
               "path": "package.json",
@@ -40,7 +40,7 @@
           "specs": [
             "package.json"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "package.json": {
               "path": "package.json",
@@ -55,7 +55,7 @@
           "specs": [
             "src/cli.mjs:82-83"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "src/cli.mjs": {
               "path": "src/cli.mjs",
@@ -75,7 +75,7 @@
           "specs": [
             "src/cli.mjs:30"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "src/cli.mjs": {
               "path": "src/cli.mjs",
@@ -95,7 +95,7 @@
           "specs": [
             "src/schedule.mjs:6-20"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "src/schedule.mjs": {
               "path": "src/schedule.mjs",
@@ -115,7 +115,7 @@
           "specs": [
             "src/window.mjs:25-26"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "src/window.mjs": {
               "path": "src/window.mjs",
@@ -135,7 +135,7 @@
           "specs": [
             "src/window.mjs:46-60"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "src/window.mjs": {
               "path": "src/window.mjs",
@@ -155,7 +155,7 @@
           "specs": [
             "src/checks/traefik.mjs:108"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "src/checks/traefik.mjs": {
               "path": "src/checks/traefik.mjs",
@@ -169,33 +169,33 @@
             }
           }
         },
-        "4b2d183ded2b": {
-          "text": "A hook is flagged when its absolute path is missing or not executable, or when a bare command name is on none of six standard PATH directories under the root.",
+        "a06df732b14d": {
+          "text": "A hook is flagged when its absolute path is missing or not executable, or when a bare command name is on none of six standard PATH directories under the root...",
           "line": 22,
           "specs": [
             "src/hooks.mjs:5",
-            "src/hooks.mjs:20-36"
+            "src/hooks.mjs:24-44"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "src/hooks.mjs": {
               "path": "src/hooks.mjs",
-              "blob": "e97612c5444330d2896b45012d694693151511ad",
-              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb",
+              "blob": "0ad89ddaff76782aa24cfb33746e57b56450dc83",
+              "commit": "a3af51718fa1d44a30c6727435fc8a2a194005e9",
               "range": {
                 "start": 5,
                 "end": 5,
                 "hash": "fcbc694a788219876e8c9c65e60632a83ff1919b"
               }
             },
-            "src/hooks.mjs:20-36": {
+            "src/hooks.mjs:24-44": {
               "path": "src/hooks.mjs",
-              "blob": "e97612c5444330d2896b45012d694693151511ad",
-              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb",
+              "blob": "0ad89ddaff76782aa24cfb33746e57b56450dc83",
+              "commit": "a3af51718fa1d44a30c6727435fc8a2a194005e9",
               "range": {
-                "start": 20,
-                "end": 36,
-                "hash": "e7ff6fc98e24c8dd7091cf474127603030caeeb4"
+                "start": 24,
+                "end": 44,
+                "hash": "b5aabf0f8d77f07fe66cb0740f30faae33b5ccb5"
               }
             }
           }
@@ -206,7 +206,7 @@
           "specs": [
             "src/checks/acmesh.mjs:7-19"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "src/checks/acmesh.mjs": {
               "path": "src/checks/acmesh.mjs",
@@ -220,22 +220,22 @@
             }
           }
         },
-        "f110fad226a5": {
-          "text": "Every file read goes through a `Tree` that resolves symlinks, including ones in the middle of a path, against the audited root and gives up after 20 hops.",
+        "e47ae68a89b1": {
+          "text": "Every file read goes through a `Tree` that resolves symlinks, including ones in the middle of a path, against the audited root and gives up after 20 hops. A ...",
           "line": 27,
           "specs": [
-            "src/fsx.mjs:21-45"
+            "src/fsx.mjs:32-60"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "src/fsx.mjs": {
               "path": "src/fsx.mjs",
-              "blob": "bfe8c4e5ff9ca8ae07a11b79d602a0394f0ddf30",
-              "commit": "eb9887fd8be9d8de887c1f9134a2504c128d9eb2",
+              "blob": "5a46b413521104f7a2b57c0e312b2b297c337220",
+              "commit": "a3af51718fa1d44a30c6727435fc8a2a194005e9",
               "range": {
-                "start": 21,
-                "end": 45,
-                "hash": "86e5e4156b44818a6422f68da955d8afd2aba865"
+                "start": 32,
+                "end": 60,
+                "hash": "5c4d11f67dff182e6db13e113fdace584b536b88"
               }
             }
           }
@@ -246,12 +246,12 @@
           "specs": [
             "src/cron.mjs:4-5"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "src/cron.mjs": {
               "path": "src/cron.mjs",
-              "blob": "3c6c02684c9aeaa4093320fd683a7907a707f70f",
-              "commit": "ce16cf178279cb227eb6a2ccfb35a2f90a9629eb",
+              "blob": "7faef819498e0c81ab1860fb37764a976d7b9146",
+              "commit": "a3af51718fa1d44a30c6727435fc8a2a194005e9",
               "range": {
                 "start": 4,
                 "end": 5,
@@ -267,7 +267,7 @@
             "src/demo-tree.mjs:33",
             "src/demo-tree.mjs:97-100"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             "src/demo-tree.mjs": {
               "path": "src/demo-tree.mjs",
@@ -298,7 +298,7 @@
             ".github/workflows/ci.yml:9-10",
             ".github/workflows/ci.yml:24"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             ".github/workflows/ci.yml": {
               "path": ".github/workflows/ci.yml",
@@ -329,7 +329,7 @@
             ".github/dependabot.yml",
             ".github/scripts/automerge-eligible.mjs"
           ],
-          "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f",
+          "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e",
           "files": {
             ".github/dependabot.yml": {
               "path": ".github/dependabot.yml",
@@ -344,8 +344,8 @@
           }
         }
       },
-      "pinnedAt": "2026-11-03T13:24:37.792Z",
-      "head": "8ee7d50a80ef5cfd9f9d4d0d2830f92252add94f"
+      "pinnedAt": "2026-11-03T13:33:11.302Z",
+      "head": "d7aa986cb31bf605e05477229d43bccdd9d7150e"
     }
   }
 }
