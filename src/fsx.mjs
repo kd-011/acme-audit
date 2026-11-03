@@ -9,6 +9,17 @@ export class Tree {
   constructor(root, onError = () => {}) {
     this.root = path.resolve(root);
     this.onError = onError;
+    this.reported = new Set();
+  }
+
+  // A path the audit is not allowed to look at is not the same as a path that is not there.
+  deny(p, e) {
+    if (!this.reported.has(p)) { this.reported.add(p); this.onError(p, e); }
+    return { path: p, st: null, dangling: false, denied: true };
+  }
+
+  isDenied(p) {
+    return this.resolve(p).denied === true;
   }
 
   real(p) {
@@ -25,11 +36,14 @@ export class Tree {
     for (let i = 0; i < parts.length; i++) {
       const next = path.posix.join(cur, parts[i]);
       let st;
-      try { st = fs.lstatSync(this.real(next)); } catch { return { path: path.posix.join(cur, ...parts.slice(i)), st: null, dangling: hops > 0 }; }
+      try { st = fs.lstatSync(this.real(next)); } catch (e) {
+        if (e.code === 'ENOENT' || e.code === 'ENOTDIR') return { path: path.posix.join(cur, ...parts.slice(i)), st: null, dangling: hops > 0 };
+        return this.deny(next, e);
+      }
       if (!st.isSymbolicLink()) { cur = next; continue; }
       if (++hops > 20) return { path: next, st: null, dangling: true };
       let target;
-      try { target = fs.readlinkSync(this.real(next)); } catch { return { path: next, st: null, dangling: true }; }
+      try { target = fs.readlinkSync(this.real(next)); } catch (e) { return this.deny(next, e); }
       const base = path.isAbsolute(target) ? '/' : cur;
       parts = [...path.posix.join(base, target).split('/').filter(Boolean), ...parts.slice(i + 1)];
       cur = '/';

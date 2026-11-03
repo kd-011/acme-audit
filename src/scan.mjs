@@ -33,7 +33,7 @@ function addScheduler(ctx, s) {
   ctx.schedulers.push({ enabled: true, ...s });
 }
 
-const CRON_DIRS = { '/etc/cron.hourly': 1, '/etc/cron.daily': 1, '/etc/cron.weekly': 7, '/etc/cron.monthly': 31 };
+const CRON_DIRS = { '/etc/cron.hourly': 1 / 24, '/etc/cron.daily': 1, '/etc/cron.weekly': 7, '/etc/cron.monthly': 31 };
 
 export function scanCron(ctx) {
   const files = ['/etc/crontab', ...ctx.tree.children('/etc/cron.d'), ...ctx.tree.children('/var/spool/cron/crontabs'), ...ctx.tree.children('/var/spool/cron')];
@@ -108,7 +108,8 @@ export function scanSystemd(ctx) {
       if (/\.(wants|requires)$/.test(name)) { for (const n of t.list(p)) enabled.add(n); continue; }
       if (!/\.(timer|service)$/.test(name) || units.has(name)) continue;
       const lst = t.lstat(p);
-      if (lst?.isSymbolicLink() && t.resolve(p).path === '/dev/null') { masked.add(name); units.set(name, null); continue; }
+      // A masked unit points at /dev/null. Keep looking in the later directories for the real unit, so it is still read.
+      if (lst?.isSymbolicLink() && t.resolve(p).path === '/dev/null') { masked.add(name); continue; }
       units.set(name, p);
     }
   }
@@ -135,18 +136,16 @@ export function scanSystemd(ctx) {
     const spans = keys.filter((k) => k.section === 'Timer' && /^OnUnit(Active|Inactive)Sec$/.test(k.key));
     const cals = keys.filter((k) => k.section === 'Timer' && k.key === 'OnCalendar');
     const gaps = [];
-    const days = new Set();
-    let calOk = cals.length > 0;
     for (const c of cals) {
       const d = calendarDays(c.value);
-      if (!d) { calOk = false; ctx.note(p, `line ${c.line}: could not read OnCalendar=${c.value}`); } else d.forEach((x) => days.add(x));
+      if (!d) ctx.note(p, `line ${c.line}: could not read OnCalendar=${c.value}`);
+      else gaps.push(maxGap(d));
     }
-    if (calOk) gaps.push(maxGap(days));
     for (const s of spans) { const g = timespanDays(s.value); if (g) gaps.push(g); else ctx.note(p, `line ${s.line}: could not read ${s.key}=${s.value}`); }
     const gap = gaps.length ? Math.min(...gaps) : null;
     if (!gaps.length && !keys.some((k) => /^OnCalendar$|^OnUnit/.test(k.key)) && keys.some((k) => /^On(Boot|Startup|Active)Sec$/.test(k.key))) ctx.note(p, 'runs only at boot or start, so the time between runs depends on uptime');
     const first = spans[0] ?? cals[0] ?? keys[0];
-    addScheduler(ctx, { client, kind: 'timer', file: p, line: first?.line ?? null, gap, enabled: enabled.has(name) && !masked.has(name), name, text });
+    addScheduler(ctx, { client, kind: 'timer', file: p, line: first?.line ?? null, gap, enabled: enabled.has(name) && !masked.has(name), masked: masked.has(name), name, text });
   }
   // Services that run a renewal are searched for hooks and numbers even when no timer starts them.
   for (const [name, p] of units) {
@@ -226,19 +225,29 @@ export function judgeSchedulers(ctx) {
       detail: { gap_days: s.gap, target_days: j.target.days, schedule: s.kind },
     });
   }
-  for (const [client, dir] of [['certbot', '/etc/letsencrypt/renewal'], ['acmesh', ctx.acmeHome ?? '/.acme.sh']]) {
-    if (!ctx.found[client]) continue;
+  const NONE_CHECKED = { certbot: '/etc/letsencrypt/renewal', acmesh: ctx.acmeHome ?? '/.acme.sh' };
+  const CMD = { certbot: 'certbot renew', acmesh: 'acme.sh --cron', lego: 'lego renew' };
+  const blind = 'This audit only sees timers and cron files under the root it was given, so a scheduler in a container, on another machine or in a service manager it does not read is invisible to it.';
+  for (const client of new Set([...ctx.schedulers.map((s) => s.client), ...Object.keys(NONE_CHECKED).filter((c) => ctx.found[c])])) {
     const mine = ctx.schedulers.filter((s) => s.client === client);
     if (mine.some((s) => s.enabled)) continue;
-    const off = mine.find((s) => !s.enabled);
-    const cmd = client === 'certbot' ? 'certbot renew' : 'acme.sh --cron';
-    const blind = 'This audit only sees timers and cron files under the root it was given, so a scheduler in a container, on another machine or in a service manager it does not read is invisible to it.';
-    ctx.add({
-      kind: 'TIMER-INFREQUENT', severity: 'error', client,
-      file: off ? off.file : dir, line: off ? off.line : null,
-      summary: off ? `${off.name} runs ${cmd} but is not enabled` : `nothing under this root runs ${cmd}`,
-      why: off ? 'Nothing starts the timer, so certificates are never renewed. They then expire on their lifetime, and shorter lifetimes make that come faster.' : `Certificates are only renewed when something runs it. ${blind}`,
-      detail: { schedule: off ? 'timer-not-enabled' : 'none' },
-    });
+    const off = mine.filter((s) => !s.enabled);
+    if (!off.length) {
+      ctx.add({
+        kind: 'TIMER-INFREQUENT', severity: 'error', client, file: NONE_CHECKED[client], line: null,
+        summary: `nothing under this root runs ${CMD[client]}`,
+        why: `Certificates are only renewed when something runs it. ${blind}`,
+        detail: { schedule: 'none' },
+      });
+      continue;
+    }
+    for (const s of off) {
+      ctx.add({
+        kind: 'TIMER-INFREQUENT', severity: 'error', client, file: s.file, line: s.line,
+        summary: `${s.name} runs ${CMD[client]} but is ${s.masked ? 'masked' : 'not enabled'}`,
+        why: `Nothing starts the timer, so certificates are never renewed. They then expire on their lifetime, and shorter lifetimes make that come faster.`,
+        detail: { schedule: s.masked ? 'timer-masked' : 'timer-not-enabled' },
+      });
+    }
   }
 }

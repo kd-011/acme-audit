@@ -19,6 +19,8 @@ acme-audit demo [--json]
 
 Exit codes: 0 when nothing at or above `--fail-on` was found, 1 when something was, 2 when the tool could not run (a root that is not a directory, an unknown option, a schedule file it cannot read).
 
+A path the process is not allowed to read is reported once as a note and is never reported as missing. Run as root to include those paths.
+
 Paths in the output are paths as the audited machine sees them, so `--root /mnt/backup` prints `/etc/letsencrypt/...`, not `/mnt/backup/etc/letsencrypt/...`. Symlinks are followed inside the root and never out of it.
 
 ## Severities
@@ -53,7 +55,7 @@ For each lifetime in the schedule the audit works out the day the renewal fires 
 
 ### TIMER-INFREQUENT
 
-Looks at what runs the renewal. For systemd timers it reads `OnCalendar` (shortcuts such as `daily` and `weekly`, weekday names, day and month lists, ranges and steps; the time of day is ignored) and `OnUnitActiveSec` and `OnUnitInactiveSec`. For cron it reads five-field lines, the `@` shortcuts, `/etc/anacrontab` and the `cron.daily` family. Both are expanded to the days they fire on across two years, and the longest gap is what counts.
+Looks at what runs the renewal. For systemd timers it reads `OnCalendar` (shortcuts such as `daily` and `weekly`, weekday names, day and month lists, ranges and steps; the time of day is ignored) and `OnUnitActiveSec` and `OnUnitInactiveSec`. For cron it reads five-field lines, the `@` shortcuts, `/etc/anacrontab` and the `cron.daily` family. Both are expanded to the days they fire on across two years, plus the times of day, and the longest gap is what counts. A job that fires several times a day has a gap under one day.
 
 A run gap is too long when the renewal window, taken as the last third of the lifetime, would hold fewer than `policy.min_runs_in_renew_window` runs. With the schedule as shipped that means about 5 days for 45-day certificates.
 

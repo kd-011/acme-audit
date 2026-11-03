@@ -3,7 +3,8 @@ import path from 'node:path';
 import { isExecutable } from './fsx.mjs';
 
 const PATH_DIRS = ['/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin'];
-const BUILTINS = new Set([':', '.', '[', 'true', 'false', 'echo', 'cd', 'exit', 'export', 'source', 'test', 'exec', 'eval', 'set', 'read', 'printf', 'kill', 'wait', 'umask', 'trap', 'command', 'type']);
+const RESERVED = ['if', 'then', 'else', 'elif', 'fi', 'for', 'while', 'until', 'do', 'done', 'case', 'esac', 'in', 'select', 'function', 'time', '[[', '!', '{', '}'];
+const BUILTINS = new Set([...RESERVED, ':', '.', '[', 'true', 'false', 'echo', 'cd', 'exit', 'export', 'source', 'test', 'exec', 'eval', 'set', 'read', 'printf', 'kill', 'wait', 'umask', 'trap', 'command', 'type']);
 
 export function shellWords(text) {
   return [...text.matchAll(/"([^"]*)"|'([^']*)'|(\S+)/g)].map((m) => m[1] ?? m[2] ?? m[3]);
@@ -12,7 +13,9 @@ export function shellWords(text) {
 // The program a hook command starts with, or null when it cannot be told from text alone.
 export function hookProgram(command) {
   const words = shellWords(command.trim());
-  const w = words.find((x) => !/^[A-Za-z_]\w*=/.test(x));
+  const first = words.find((x) => !/^[A-Za-z_]\w*=/.test(x));
+  if (!first || first.startsWith('(')) return null;
+  const w = first.replace(/[;&|]+$/, '');
   if (!w || BUILTINS.has(w) || w.startsWith('$') || w.startsWith('./') || w.startsWith('../') || w.startsWith('~')) return null;
   return w;
 }
@@ -21,6 +24,7 @@ export function hookProgram(command) {
 export function probe(tree, program) {
   if (program.startsWith('/')) {
     const r = tree.resolve(program);
+    if (r.denied) return null;
     if (!r.st) return { problem: 'missing', path: program };
     if (r.st.isDirectory() || !isExecutable(r.st)) return { problem: 'not-executable', path: program };
     return 'ok';
@@ -80,6 +84,7 @@ export function checkHookDir(ctx, dir, role) {
   for (const p of ctx.tree.children(dir)) {
     if (p.endsWith('~')) continue;
     const r = ctx.tree.resolve(p);
+    if (r.denied) continue;
     if (r.dangling || (!r.st && ctx.tree.lstat(p))) {
       ctx.add({ kind: 'HOOK-MISSING', severity: 'error', client: 'certbot', file: p, summary: `${path.posix.basename(p)} is a symlink to a file that does not exist`, why: `certbot runs the files in ${dir} as ${role} hooks. This one points nowhere, so the work it was meant to do is not done.`, detail: { field: `renewal-hooks/${role}`, role } });
     } else if (r.st?.isFile() && !isExecutable(r.st)) {

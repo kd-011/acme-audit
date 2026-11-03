@@ -101,7 +101,7 @@ export function checkCertbot(ctx) {
       const paths = new Map();
       for (const p of (rp.webroot_path?.value ?? '').split(',').map((x) => x.trim()).filter(Boolean)) paths.set(p, rp.webroot_path.line);
       for (const [, v] of Object.entries(ini.subs.webroot_map ?? {})) paths.set(v.value, v.line);
-      const gone = [...paths].filter(([p]) => !t.isDir(p));
+      const gone = [...paths].filter(([p]) => !t.isDir(p) && !t.isDenied(p));
       if (gone.length) ctx.add({ kind: 'DEAD-AUTH', severity: 'warn', client: 'certbot', file, line: gone[0][1], summary: `${name} uses the webroot ${gone[0][0]}, which is not on this machine`, why: 'The webroot authenticator writes its challenge file there. If the directory is gone the challenge fails and the certificate is not renewed. A webroot that lives in a container will show up here too.', detail: { reason: 'webroot-missing', paths: gone.map(([p]) => p) } });
     }
     if (rp.autorenew && /^(false|0|no)$/i.test(rp.autorenew.value)) {
