@@ -1,6 +1,7 @@
 // Found in review: permission errors, shell syntax in hooks, disabled timers of any client, sub-daily schedules.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import path from 'node:path';
 import { test } from 'node:test';
 import { audit, certbotConf, certbotTimer, enableCertbotTimer, find, kinds, link, makeRoot, put } from '../test-support/tree.mjs';
 
@@ -31,12 +32,13 @@ test('a path the audit may not read is a note, not a missing hook or webroot', {
 test('an unreadable home does not make acme.sh vanish without a word', { skip: process.getuid?.() === 0 }, () => {
   const root = makeRoot();
   put(root, 'home/bob/.acme.sh/acme.sh', 'VER=3.1.7\n', 0o755);
-  fs.chmodSync(`${root}/home/bob`, 0o000);
+  const bob = path.join(root, 'home', 'bob');
+  fs.chmodSync(bob, 0o000);
   try {
     const res = audit(root);
     assert.ok(res.json.notes.some((n) => /permission denied/.test(n.message)));
   } finally {
-    fs.chmodSync(`${root}/home/bob`, 0o755);
+    fs.chmodSync(bob, 0o755);
   }
 });
 
