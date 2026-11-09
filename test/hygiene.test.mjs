@@ -37,8 +37,11 @@ export function containsHashed(text, hashes) {
   return false;
 }
 
-// kd-011 in commits made locally. GitHub writes the profile's display name on web merges.
+// kd-011 in commits made locally. GitHub writes the profile's display name on web merges,
+// and the owner accepts that name, so it is allowed by hash like the guard above.
 const OWNER_NAMES = new Set(['kd-011', 'KD011']);
+const OWNER_NAME_HASHES = new Set(['96c3dcc4b889b0ce24b3c0eac894b834b8200f0a14e499034056a62af209ad1f']);
+const isOwner = (name) => OWNER_NAMES.has(name) || OWNER_NAME_HASHES.has(sha256(name));
 
 function trackedTextFiles() {
   const r = git('ls-files', '-z', '--cached', '--others', '--exclude-standard');
@@ -67,8 +70,8 @@ test('no personal data or em dashes anywhere in the tree', { skip: !inRepo }, ()
 export function commitProblems({ an, ae, cn, body }) {
   const bot = an === 'dependabot[bot]';
   const problems = [];
-  if (!OWNER_NAMES.has(an) && !bot) problems.push(`author ${an}`);
-  if (!OWNER_NAMES.has(cn) && cn !== 'GitHub') problems.push(`committer ${cn}`);
+  if (!isOwner(an) && !bot) problems.push(`author ${an}`);
+  if (!isOwner(cn) && cn !== 'GitHub') problems.push(`committer ${cn}`);
   if (!bot && !/@users\.noreply\.github\.com$/.test(ae)) problems.push(`email ${ae}`);
   if (!bot && /claude|anthropic|co-authored-by|generated with/i.test(body)) problems.push('AI trailer');
   if (!bot && body.includes(EM_DASH)) problems.push('em dash');
