@@ -5,12 +5,42 @@
   "type": "module",
   "license": "MIT",
   "author": "kd-011",
-  "repository": { "type": "git", "url": "git+https://github.com/kd-011/acme-audit.git" },
-  "bugs": { "url": "https://github.com/kd-011/acme-audit/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kd-011/acme-audit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kd-011/acme-audit/issues"
+  },
   "homepage": "https://github.com/kd-011/acme-audit#readme",
-  "keywords": ["acme", "letsencrypt", "certbot", "acme.sh", "lego", "caddy", "traefik", "tls", "lint", "self-hosted"],
-  "bin": { "acme-audit": "bin/acme-audit.mjs" },
-  "files": ["bin", "src", "data", "docs", "LICENSE", "README.md", "CHANGELOG.md"],
-  "engines": { "node": ">=22" },
-  "scripts": { "test": "node --test" }
+  "keywords": [
+    "acme",
+    "letsencrypt",
+    "certbot",
+    "acme.sh",
+    "lego",
+    "caddy",
+    "traefik",
+    "tls",
+    "lint",
+    "self-hosted"
+  ],
+  "bin": {
+    "acme-audit": "bin/acme-audit.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "data",
+    "docs",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
 }
